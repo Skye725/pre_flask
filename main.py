@@ -24,9 +24,11 @@ def home():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    # download_model_file()
-    req = request.get_json()    
+  # download_model_file()
+    req = request.get_json()
     parameters = req['sessionInfo']['parameters']
+    print(parameters)
+
     height_meters = parameters['height'] / 100
     weight_kg = parameters['weight']
     bmi = weight_kg / (height_meters ** 2)
@@ -44,10 +46,11 @@ def webhook():
         "Liver Condition": "Yes" if parameters['liver'] == 'yes' else 'No',
         "Parental Osteoporosis": "Yes" if parameters['genetic'] == 'yes' else 'No'
     }
-
-
+    print("inputdata=")
+    print(input_data)
     loaded_model = load_model()
     # 调用预测函数
+    # df_input_preprocessed = preprocess_input_data(df_input, example_features, mean, std)
     prediction_str, prediction_prob = predict_osteoporosis(input_data)
 
     # 打印预测结果
@@ -63,34 +66,33 @@ def webhook():
             "messages": [{"text": {"text": [response_text]}}]
         }
     }
-    print('..............................................................')
-    print(fulfillment_response)
-    return jsonify(fulfillment_response)
 
-def call_openai_api(prompt):
-    headers = {
-            'x-api-key': 'sec_3LssaSH0T2jd3yZoaFTYXZh6RnwrSQTl',
-            "Content-Type": "application/json",
-        }
-    data = {
-        'sourceId': "cha_tonm5kmgQaOZIGZSagNv8",
-        'messages': [
-            {
-                'role': "user",
-                'content': prompt,
-            }
-        ]
-    }
-    response = requests.post(
-    'https://api.chatpdf.com/v1/chats/message', headers=headers, json=data)
 
-    if response.status_code == 200:
-        print('Result:', response.json()['content'])
-    else:
-        print('Status:', response.status_code)
-        print('Error:', response.text)
-        
-    return response.json()
+    return fulfillment_response
+
+
+    # loaded_model = load_model()
+    # # 调用预测函数
+    # prediction_str, prediction_prob = predict_osteoporosis(input_data)
+
+    # # 打印预测结果
+    # print("Prediction:", prediction_str)
+    # print("Confidence Score:", round(prediction_prob * 100, 1))
+    # score=round(prediction_prob * 100, 1)
+    # # score=0
+
+    # response_text = f"The Confidence Score is {score} and the Prediction result is {prediction_str}."
+
+    # # 构建回复
+    # fulfillment_response = {
+    #     "fulfillment_response": {
+    #         "messages": [{"text": {"text": [response_text]}}]
+    #     }
+    # }
+    # print('..............................................................')
+    # print(fulfillment_response)
+    # return jsonify(fulfillment_response)
+
 
 def load_model():
     try:
