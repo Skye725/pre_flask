@@ -7,7 +7,6 @@ import pickle
 import tensorflow as tf
 import keras
 import json
-from google.cloud import storage
 MODEL_PICKLE = "ann_clf.pkl"
 EXAMPLE_DATA_FILE = "example_data_cleaned.csv"
 EXAMPLE_MEAN_STD_FILE = "example_data_preprocessed_mean_std.csv"
