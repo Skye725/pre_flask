@@ -7,6 +7,7 @@ import pickle
 import tensorflow as tf
 import keras
 import json
+import os
 MODEL_PICKLE = "ann_clf.pkl"
 EXAMPLE_DATA_FILE = "example_data_cleaned.csv"
 EXAMPLE_MEAN_STD_FILE = "example_data_preprocessed_mean_std.csv"
@@ -19,11 +20,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "<h1>hello world</h1>"
+    return jsonify({ 'status' : 'running'})
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-  # download_model_file()
     req = request.get_json()
     parameters = req['sessionInfo']['parameters']
     print(parameters)
@@ -248,7 +248,6 @@ def standardize(data, save_csv=False, file_path=""):
         combined.to_csv(file_path, index=False)
 
     return data_scaled
-
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
